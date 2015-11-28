@@ -1,0 +1,21 @@
+name: BuddyPets
+main: BuddyPets\Main
+version: 1.0
+api: 1.12.0
+#api: 2.0.0
+author: mwvent
+website: http://wattz.org.uk/mcpe
+
+commands:
+ pet:
+   aliases: [mypet]
+   description: BuddyPets commands.
+   permission: buddypets.commands
+permissions:
+ buddypets:
+  default: true
+  description: "BuddyPets permissions"
+  children:
+   buddypets.commands:
+    default: true
+    description: "BuddyPets commands"
