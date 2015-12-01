@@ -38,7 +38,7 @@ class Commands extends PluginBase implements CommandExecutor{
 					"/pet despawn - despawn your pet",
 					" ",
 					"Setup and activate your pet at ",
-					$plugin->website
+					$this->plugin->website
 				];
 				foreach( $helplines as $helpline ) {
 					$sender->sendMessage($this->plugin->translateColors("&",$helpline));
