@@ -26,6 +26,7 @@ class PetOwner {
 		
 		public function __construct($player, $db, $website) {
 			$this->db = $db;
+			$this->website = $website;
 			$this->player = $player;
 			$this->playerName = $player->getName();
 			$this->playerName_lower = strtolower($player->getName());
@@ -38,7 +39,19 @@ class PetOwner {
 			}
 		}
 		
+		function debugSetMeta($petTypeNID, $id, $val) {
+			$this->reload();
+			$this->petType->NID=$petTypeNID;
+			$this->petType->meta[$id]=[0, $val];
+			$this->petEntity = new \BuddyPets\Entities\Pet(new dummyChunk, new Compound, $this);
+		}
+		
 		public function reload() {
+			if(isset($this->petEntity)) {
+				if( !$this->petEntity->closed) {
+					$this->petEntity->close();
+				}
+			}
 			$newPetProperties = $this->db->getPetProperties($this);
 			if( is_null($newPetProperties) ) {
 				$this->petProperties = null;
@@ -46,27 +59,33 @@ class PetOwner {
 				return;
 			}
 			$this->petProperties = $newPetProperties;
-			$this->petType = Pets::getPetType($newPetProperties->petTypeUID);
+			$this->petType = Pets::getPetType($newPetProperties->petTypeUID, $newPetProperties->petIsBaby);
+		}
+		
+		public function deSpawnPet() {
+			if(isset($this->petEntity)) {
+				if( !$this->petEntity->closed) {
+					$this->petEntity->close();
+				}
+			}
 		}
 		
 		public function spawnPet() {
 			$this->reload();
 			if( is_null( $this->petProperties ) ) {
-				$spawnFailReason = "You have no pet set - login to $website to create or set a pet.";
+				$this->spawnFailReason = $this->db->getLastOwnerError($this);
 				return false;
 			}
 			
 			if( is_null( $this->petType ) ) {
-				$spawnFailReason = "Invalid pet type - please login to $website and check you pet settings.";
+				$this->spawnFailReason = "Invalid pet type - please login to $this->website and check your pet settings.";
 				return false;
 			}
 			
-			/*
-			if( $this->petProperties->expiryTime < currenttime ) {
-				$spawnFailReason = "Your pet activiation has expired - please login to $website to activate your pet.";
+			if( ! $this->petProperties->isActivated ) {
+				$this->spawnFailReason = "Your pet activiation has expired - please login to $this->website to activate your pet.";
 				return false;
 			}
-			*/
 			
 			if(isset($this->petEntity)) {
 				if( !$this->petEntity->closed) {

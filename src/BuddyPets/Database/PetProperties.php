@@ -6,11 +6,13 @@ use BuddyPets\Entities\Pets;
 class PetProperties {
 	public $petName;
 	public $petTypeUID;
-	public $expiryTime;
+	public $isActivated;
+	public $petIsBaby;
 	
-	public function __construct($petName, $petTypeUID, $expiryTime) {
+	public function __construct($petName, $petTypeUID, $petIsBaby, $isActivated) {
 		$this->petName = $petName;
 		$this->petTypeUID = $petTypeUID;
-		$this->expiryTime = $expiryTime;
+		$this->isActivated = $isActivated;
+		$this->petIsBaby = $petIsBaby;
 	}
 }

@@ -1,4 +1,12 @@
 ---
 # website to mention when telling players where to do pets
 website: "HTTPS://YOURWEBSITE.WHATEVER"
+# the world to enable pets for
+petworld: world
+# mysql connection info - do not use localhost use 
+server: 127.0.0.1
+user: youruser
+pass: yourpass
+database: yourdb
+buddypets-db-table: buddypetsv1
 ...

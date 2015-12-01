@@ -25,26 +25,26 @@ class Main extends PluginBase {
     public $cfg;
     public $website;
 	public $petOwners = [];
+	public $petLevel = "";
 	
     public function onEnable() {
         @mkdir($this->getDataFolder());
         $this->saveDefaultConfig();
         $this->getCommand("pet")->setExecutor(new Commands\Commands($this));
 		$this->website = $this->read_cfg("website");
-		$this->db = new \BuddyPets\Database\Database();
+		$this->petLevel = $this->read_cfg("petworld");
+		$this->db = new \BuddyPets\Database\Database($this);
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		Entity::registerEntity(\BuddyPets\Entities\Pets::class,true);
-		//$this->getServer()->getScheduler()->scheduleRepeatingTask($this->readForeignMessagesTask, $rate_aprox_seconds * 20);
     }
 	
 	public function petOwnerRegister(Player $player, $levelname) {
 		$lcasename = strtolower($player->getName());
 		$lcaselevelname = strtolower($levelname);
-		$inPetsLevel = true; // TODO $levelname = configlevelname
+		$inPetsLevel = (strtolower($this->petLevel) == $lcaselevelname); // TODO $levelname = configlevelname
 		$playerRegistered =  isset ( $this->petOwners[$lcasename] );
 		// handle pet owner entered pet world (tp/login)
 		if($inPetsLevel && !$playerRegistered ) {
-			echo "REG $lcasename!\n";
 			$this->petOwners[$lcasename] = new PetOwner($player, $this->db, $this->website);
 			return;
 		}
@@ -60,7 +60,6 @@ class Main extends PluginBase {
 		$lcasename = strtolower($player->getName());
 		$playerRegistered =  isset ( $this->petOwners[$lcasename] );
 		if( $playerRegistered ) {
-			echo "DEREG $lcasename!\n";
 			unset($this->petOwners[$lcasename]);
 		}
 	}
@@ -113,7 +112,7 @@ class Main extends PluginBase {
 		if( ( ! isset($this->cfg[$key]) ) && ( ! is_null( $defaultvalue ) ) ) {
 			$sendmsg = "Cannot load " . Main::PREFIX . " required config key " . $key . " not found in config file";
 			Server::getInstance()->getLogger()->critical($this->translateColors("&", Main::PREFIX . $sendmsg));
-			die();
+			return;
 		}
 		// otherwise return config file value
 		return $this->cfg[$key];
