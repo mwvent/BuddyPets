@@ -50,7 +50,11 @@ class EventListener extends PluginBase implements Listener {
 	public function onPlayerTeleport(EntityTeleportEvent $event) {
 		$player = $event->getEntity();
 		if ( $player instanceof Player) {
-			$this->plugin->petOwnerRegister($player, $event->getTo()->getLevel()->getName());
+			if( ! is_null ( $event->getTo() ) ) {
+				if( ! is_null ( $event->getTo()->getLevel() ) ) {
+					$this->plugin->petOwnerRegister($player, $event->getTo()->getLevel()->getName());
+				}
+			}
 		}
 	}
 }
