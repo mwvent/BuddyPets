@@ -60,7 +60,10 @@ class Main extends PluginBase {
 		$lcasename = strtolower($player->getName());
 		$playerRegistered =  isset ( $this->petOwners[$lcasename] );
 		if( $playerRegistered ) {
-			unset($this->petOwners[$lcasename]);
+			if( isset($this->petOwners[$lcasename]) ) {
+				$this->petOwners[$lcasename]->deSpawnPet();
+				unset($this->petOwners[$lcasename]);
+			}
 		}
 	}
 
