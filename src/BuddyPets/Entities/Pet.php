@@ -244,7 +244,7 @@ class Pet extends Animal implements Tameable{
 				return;
 			}
 			
-			if($target !== null){
+			if($target !== null && $dist != 0){
 				$dir = $target->getLevel()->getSafeSpawn($target)->subtract($this);
 				$dir = $dir->divide($dist);
 				$this->yaw = rad2deg(atan2(-$dir->getX(),$dir->getZ()));
