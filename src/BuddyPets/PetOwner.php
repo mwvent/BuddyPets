@@ -69,6 +69,24 @@ class PetOwner {
 				}
 			}
 		}
+                
+                public function petStay() {
+                        if(isset($this->petEntity)) {
+				if( !$this->petEntity->closed) {
+					return $this->petEntity->stay();
+				}
+			}
+                        return false;
+                }
+                
+                public function petFollow() {
+                        if(isset($this->petEntity)) {
+				if( !$this->petEntity->closed) {
+					return $this->petEntity->follow();
+				}
+			}
+                        return false;
+                }
 		
 		public function spawnPet() {
 			$this->reload();

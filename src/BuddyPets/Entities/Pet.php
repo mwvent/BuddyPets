@@ -49,7 +49,7 @@ class Pet extends Animal implements Tameable{
 	// const NETWORK_ID=10;
 	public static $speed = 0.2;
 	public static $jump = 4;
-	public static $dist = 2;
+	public static $dist = 4;
 	public $width = 0.625;
 	public $length = 1.4375;
 	public $height = 1.25;
@@ -60,6 +60,8 @@ class Pet extends Animal implements Tameable{
 	private $petName;
 	private $petName_unformatted;
 	private $targetPlayer;
+        
+        private $isSitting = false;
 	
 	public function getName(){
 		return $this->petName;
@@ -205,6 +207,17 @@ class Pet extends Animal implements Tameable{
 			}
 		}
 	}
+        
+        public function stay() {
+            $this->isSitting = true;
+            return true;
+        }
+        
+        public function follow() {
+            $this->isSitting = false;
+            return true;
+        }
+        
 	public function onUpdate($currentTick){
 		$hasUpdate = false;
 		$this->timings->startTiming();
@@ -249,12 +262,25 @@ class Pet extends Animal implements Tameable{
 				$dir = $dir->divide($dist);
 				$this->yaw = rad2deg(atan2(-$dir->getX(),$dir->getZ()));
 				$this->pitch = rad2deg(atan(-$dir->getY()));
-				if ($dist > self::$dist) {
-					//
+                                
+                                // if dist to owner < move dist or pet is being told to stay just look at owner
+                                if ( $dist <= self::$dist || $this->isSitting ) {
+                                        //$this->yaw = rad2deg(atan2(-$dir->getX(),$dir->getZ()));
+                                        //$this->pitch = rad2deg(atan(-$dir->getY()));
+                                        $this->updateMovement();
+                                        $this->level->addEntityMovement(
+                                                $this->chunk->getX(), $this->chunk->getZ(), 
+                                                $this->id, $this->x, $this->y,
+                                                $this->z, $this->yaw, $this->pitch, $this->yaw);
+                                }
+                                
+                                // otherwise do a full movement
+				if ( $dist > self::$dist && !$this->isSitting ) {
 					$x = $dir->getX() * self::$speed;
 					$y = 0;
 					$z = $dir->getZ() * self::$speed;
 					$isJump = count($this->level->getCollisionBlocks($bb->offset($x, 1.2, $z))) <= 0;
+                                        
 					if(count($this->level->getCollisionBlocks($bb->offset(0, 0.1, $z))) > 0){
 						if ($isJump) {
 							$y = self::$jump;
@@ -262,6 +288,7 @@ class Pet extends Animal implements Tameable{
 						}
 						$z = 0;
 					}
+                                        
 					if(count($this->level->getCollisionBlocks($bb->offset($x, 0.1, 0))) > 0){
 						if ($isJump) {
 							$y = self::$jump;
@@ -269,6 +296,7 @@ class Pet extends Animal implements Tameable{
 						}
 						$x = 0;
 					}
+                                        
 					//if ($y) echo "Jumping\n";
 					$ev = new \pocketmine\event\entity\EntityMotionEvent($this,new \pocketmine\math\Vector3($x,$y,$z));
 					$this->server->getPluginManager()->callEvent($ev);
@@ -278,7 +306,7 @@ class Pet extends Animal implements Tameable{
 					$this->z += $z;
 				}
 				
-				if ($dist > 30) {
+				if ($dist > 40) {
 					$target->sendMessage($this->petName_unformatted . " could not keep up - use /pet spawn again to bring them back");
 					$this->close();
 				}

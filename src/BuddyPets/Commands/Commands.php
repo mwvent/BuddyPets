@@ -36,6 +36,8 @@ class Commands extends PluginBase implements CommandExecutor{
 					"------------------",
 					"/pet spawn - spawn in your pet",
 					"/pet despawn - despawn your pet",
+                                        "/pet stay - ask your pet to stay",
+                                        "/pet follow - your pet follows you again",
 					" ",
 					"Setup and activate your pet at ",
 					$this->plugin->website
@@ -44,6 +46,34 @@ class Commands extends PluginBase implements CommandExecutor{
 					$sender->sendMessage($this->plugin->translateColors("&",$helpline));
 				}
 				break;
+                        case "stay" :
+                                if( ! $sender instanceof Player) {
+					$sender->sendMessage($this->plugin->translateColors("&", "&cThis command can only be used in-game"));
+					return;
+				}
+				
+				if( array_key_exists (strtolower($sender->getName()), $this->plugin->petOwners ) ) {
+					if( ! $this->plugin->petOwners[ strtolower($sender->getName()) ]->petStay()) {
+                                            $sender->sendMessage($this->plugin->translateColors("&", "&cCould not command pet, is your pet spawned?"));
+                                        } else {
+                                            $sender->sendMessage($this->plugin->translateColors("&", "&f* You tell your pet to stay put."));
+                                        }
+				}
+                                break;
+                        case "follow" :
+                                if( ! $sender instanceof Player) {
+					$sender->sendMessage($this->plugin->translateColors("&", "&cThis command can only be used in-game"));
+					return;
+				}
+				
+				if( array_key_exists (strtolower($sender->getName()), $this->plugin->petOwners ) ) {
+					if( ! $this->plugin->petOwners[ strtolower($sender->getName()) ]->petFollow()) {
+                                            $sender->sendMessage($this->plugin->translateColors("&", "&cCould not command pet, is your pet spawned?"));
+                                        } else {
+                                            $sender->sendMessage($this->plugin->translateColors("&", "&f* You tell your pet to follow."));
+                                        }
+				}
+                                break;
 			case "despawn" :
 				if( ! $sender instanceof Player) {
 					$sender->sendMessage($this->plugin->translateColors("&", "&cThis command can only be used in-game"));
