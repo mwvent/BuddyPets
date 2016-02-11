@@ -24,18 +24,12 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\network\protocol\EntityEventPacket;
 
 use pocketmine\level\format\FullChunk;
-use pocketmine\level\Location;
-use pocketmine\level\Position;
-use pocketmine\nbt\tag\Byte;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Double;
+use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\Enum;
-use pocketmine\nbt\tag\Float;
-use pocketmine\nbt\tag\Short;
-use pocketmine\nbt\tag\String;
-use pocketmine\permission\PermissibleBase;
-use pocketmine\permission\PermissionAttachment;
-use pocketmine\plugin\Plugin;
+use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\StringTag;
 
 /*
 public function spawnNewPet($player, $petName, $pettype_uid) {
@@ -76,7 +70,7 @@ class Pet extends Animal implements Tameable{
 	}
 	
 	public function __construct(
-		FullChunk $chunk, Compound $nbt, PetOwner $petOwner ) {
+		FullChunk $chunk, CompoundTag $nbt, PetOwner $petOwner ) {
 		// if $petOwner is null pocketmine is probably trying to reload a saved
 		// version of this entity which we do not want anymore - as it is not cancellable ( I think ? )
 		// just let it create and the update function will despawn the entity immediatley when it finds
@@ -95,25 +89,25 @@ class Pet extends Animal implements Tameable{
 		$this->petType =  $petOwner->petType;
 		
 		$location = $this->petOwner->player->getLocation();
-		$nbt =  new Compound("",[
+		$nbt =  new CompoundTag("",[
 			new Enum("Pos",[
-				new Double("",$location->x),
-				new Double("",$location->y),
-				new Double("",$location->z),
+				new DoubleTag("",$location->x),
+				new DoubleTag("",$location->y),
+				new DoubleTag("",$location->z),
 				]),
 			new Enum("Motion", [
-				new Double("",0),
-				new Double("",0),
-				new Double("",0),
+				new DoubleTag("",0),
+				new DoubleTag("",0),
+				new DoubleTag("",0),
 				]),
 			new Enum("Rotation",[
-				new Float("",$location->yaw),
-				new Float("",$location->pitch),
+				new FloatTag("",$location->yaw),
+				new FloatTag("",$location->pitch),
 				]),
 			]);
 			
-		$nbt->CustomName = new String("CustomName", $this->petName);
-		$nbt->CustomNameVisible = new Byte("CustomNameVisible", 1);
+		$nbt->CustomName = new StringTag("CustomName", $this->petName);
+		$nbt->CustomNameVisible = new ByteTag("CustomNameVisible", 1);
 		
 		$chunk = $location->getLevel()->getChunk($location->x >> 4, $location->z >> 4);
 		$this->setNameTagVisible(true);
