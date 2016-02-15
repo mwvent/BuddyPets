@@ -7,7 +7,7 @@ use BuddyPets\Entities\Pet;
 use BuddyPets\Database\PetProperties;
 use BuddyPets\Entities\DummyChunk;
 
-use pocketmine\nbt\tag\Compound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use pocketmine\entity\Entity;
 
@@ -43,7 +43,7 @@ class PetOwner {
 			$this->reload();
 			$this->petType->NID=$petTypeNID;
 			$this->petType->meta[$id]=[0, $val];
-			$this->petEntity = new \BuddyPets\Entities\Pet(new dummyChunk, new Compound, $this);
+			$this->petEntity = new \BuddyPets\Entities\Pet(new dummyChunk, new CompoundTag, $this);
 		}
 		
 		public function reload() {
@@ -111,7 +111,7 @@ class PetOwner {
 				}
 			}
 			
-			$this->petEntity = new \BuddyPets\Entities\Pet(new dummyChunk, new Compound, $this);
+			$this->petEntity = new \BuddyPets\Entities\Pet(new dummyChunk, new CompoundTag, $this);
 
 			return true;
 		}
