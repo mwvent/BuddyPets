@@ -27,7 +27,7 @@ use pocketmine\level\format\FullChunk;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\EnumTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\StringTag;
 
@@ -90,17 +90,17 @@ class Pet extends Animal implements Tameable{
 		
 		$location = $this->petOwner->player->getLocation();
 		$nbt =  new CompoundTag("",[
-			new EnumTag("Pos",[
+			new ListTag("Pos",[
 				new DoubleTag("",$location->x),
 				new DoubleTag("",$location->y),
 				new DoubleTag("",$location->z),
 				]),
-			new EnumTag("Motion", [
+			new ListTag("Motion", [
 				new DoubleTag("",0),
 				new DoubleTag("",0),
 				new DoubleTag("",0),
 				]),
-			new EnumTag("Rotation",[
+			new ListTag("Rotation",[
 				new FloatTag("",$location->yaw),
 				new FloatTag("",$location->pitch),
 				]),
